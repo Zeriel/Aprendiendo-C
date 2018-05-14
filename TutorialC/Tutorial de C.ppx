@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings version="1.0">
+	<category name="10-funcion2.c" />
+	<category name="05-string.c" />
+	<category name="08-registro.c" />
+	<category name="06-menu.c" />
+	<category name="09-funcion.c" />
+	<category name="11-recursion.c" />
+	<category name="16-lista2.c" />
+	<category name="18-Integrador.c" />
+	<category name="xx-archivo.c" />
+	<category name="01-basico.c" />
+	<category name="xx-archivo2.c" />
+</settings>
