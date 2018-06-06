@@ -1,6 +1,6 @@
 /****************************************************************************
  *                                                                          *
- * Filename: 18-completo.c                                                  *
+ * Filename: 18-integrador.c                                                *
  *                                                                          *
  * Purpose : Ejemplo de aplicacion de todo lo visto en Standard C.          *
  *                                                                          *

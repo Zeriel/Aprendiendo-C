@@ -20,7 +20,7 @@
 //la manera en la que se abrirá el archivo:
 //
 //	r  - abre en modo lectura.
-//	w  - abre en modo escritura. Si existe un archivo lo sobreescrive.
+//	w  - abre en modo escritura. Si existe un archivo lo sobrescribe.
 //	a  - abre en modo concatenar (append). Si el archivo no existe, lo crea.
 //	r+ - abre en modo lectura y escritura, comienza al principio del archivo.
 //	w+ - abre en modo lectura y escritura (sobreescrive el archivo).
@@ -74,7 +74,7 @@ int main(){
 	int i;			//Lo usare mas adelante para numerar cada elemento del archivo
 	 
 	//Lo abro en modo escritura
-	archivo = fopen ("archivos/ejemplo1.dat", "w");
+	archivo = fopen ("archivos/ejemplo1.dat", "wb");
 	//Nota: si en lugar de usar "w" usaramos "a", cada ejecucion de esta aplicacion acumularia datos
 	//en el archivo. Pueden cambiarlo y verificarlo en la impresion de mas abajo.
 	if (archivo == NULL)	//Si es NULL, hubo un error
@@ -88,7 +88,7 @@ int main(){
 	    fwrite (&persona1, sizeof(struct Persona), 1, archivo);
 	    fwrite (&persona2, sizeof(struct Persona), 1, archivo);
 		//&persona1 es el dato a escribir - sizeof(struct Persona) su tamaño - 1 porque no es array
-		//- archivoSalida es el archivo destino
+		//- archivo es el archivo destino
 	     
 	    if(fwrite != 0) 
 	        printf("Los datos se escribieron de forma correcta");
@@ -103,7 +103,7 @@ int main(){
 	//informacion
 
     //Lo abro en modo lectura
-    archivo = fopen ("archivos/ejemplo1.dat", "r");
+    archivo = fopen ("archivos/ejemplo1.dat", "rb");
     if (archivo == NULL)
     {
         printf("Error abriendo el archivo\n");

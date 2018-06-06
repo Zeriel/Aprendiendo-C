@@ -1,28 +1,21 @@
 /****************************************************************************
  *                                                                          *
- * Filename: 17-lista3.c                                                    *
+ * Filename: 23-listaDoblementeEncadenada.c                                 *
  *                                                                          *
- * Purpose : Ejemplo avanzado de uso de listas en Standard C.               *
+ * Purpose : Ejemplo de listas de doble enlace en Standard C.   			*
  *                                                                          *
  * History : Fecha                                                          *
- *           23-08-2017                                                     *
+ *           21-05-2018                                                     *
  *																			*
  * By: Federico Moradillo                                                   *
  *                                                                          *
  ****************************************************************************/
 
-//En este ejemplo se realizara una aplicacion completa empleando listas, para dar
-//cierre a lo visto hasta ahora.
+//Las listas doblemente encadeandas son iguales a las ya vistas, con la diferencia que
+//tendremos, además del puntero siguiente, un puntero anterior que apunta justamente
+//al nodo anterior al actual.
 //
-//Se plantea como ejercicio el siguiente enunciado:
-//
-//		Realizar una aplicación que permita agregar, modificar y eliminar productos de
-//		una lista. Un producto está compuesto por código, nombre y stock del mismo. La
-//		lista deberá estar ordenada por el código de producto. Además, se deberá poder
-//		mostrar todos los elementos de la lista, consultar por uno específico mediante
-//		su código, y obtener el total de productos cargados. El módulo principal deberá
-//		contar con un menú de opciones para navegar por la aplicación.
-
+//Se vera el ejemplo de 17-lista3.c resuelto con listas doblemente encadenadas.
 
 #include <stdio.h>
 #include <conio.h>
@@ -37,6 +30,7 @@ struct Producto{		//Defino Producto
 
 struct Lista{			//Defino la lista
 	struct Producto dato;
+	struct Lista *pant;	//Puntero anterior
 	struct Lista *ps;
 };
 
@@ -127,27 +121,32 @@ void inicializarLista (struct Lista **l){
 
 void insertarOrdenado(struct Lista **l, struct Producto p){
 	struct Lista *nuevo=malloc(sizeof(struct Lista));	//Defino el nuevo nodo
-	struct Lista *ant;	//Defino el nodo anterior
+	struct Lista *ant;	//Para la insercion aun es necesario
 	struct Lista *act;	//Defino el nodo actual
 	nuevo->dato=p;		//Cargo producto en nuevo
 	nuevo->ps=0;		//Inicializo ps de nuevo en NIL
+	nuevo->pant=0;
 	if (*l==0){			//La lista esta vacia, no hace falta moverme
 		*l=nuevo;
 	}
 	else{				//La lista no esta vacia, busco el punto de insercion
-		ant=0;			//Puntero al nodo anterior
+		ant=0;			
 		act=*l;			//Puntero al nodo actual
 		while ((act!=0) && (act->dato.codigo < nuevo->dato.codigo)){
 			ant=act;
 			act=act->ps;
 		}
-		if (ant==0){	//Si ant es NIL, inserto al principio
+		if (ant==0){	//Si anterior es NIL, inserto al principio
 			nuevo->ps= act;
 			*l=nuevo;
 		}
 		else{			//Debo insertar en el medio de dos nodos
 			nuevo->ps=act;
+			nuevo->pant=ant;
 			ant->ps=nuevo;
+			if (act != 0){
+				act->pant=nuevo;
+			}
 		}
 	}
 }
@@ -184,28 +183,36 @@ void modificarProducto(struct Lista **l){
 
 void eliminarProducto(struct Lista **l){
 	struct Lista *act;
-	struct Lista *ant;
+	struct Lista *ant;			//Lo usare solo al final
+	struct Lista *sig;			//Lo usare solo al final
 	int cod;
 	if(*l!=0){					//La lista no esta vacia
-		ant=0;
+		//ant=0;
 		act=*l;
+		act->pant=0;
 		printf("Ingrese codigo del producto a eliminar: ");
 		scanf("%d", &cod);
 		_clrscr();
 		while((act!=0) && (act->dato.codigo!=cod)){
-			ant=act;
+			//ant=act;
 			act=act->ps;
 		}
 		if (act==0){			//El elemento no existe
 			printf("El producto de codigo %d no existe", cod);
 		}
-		else if(ant==0){		//Es el primer elemento
+		else if(act->pant==0){		//Es el primer elemento
 			*l=act->ps;			//Muevo la cabeza de la lista
 			free(act);			//Elimino el nodo actual
 			printf("Eliminacion realizada con exito");
 		}
 		else{					//Es un elemento intermedio o final
-			ant->ps=act->ps;	//Reacomodo el ps de anterior
+			//ant->ps=act->ps;	//Reacomodo el ps de anterior
+			ant=act->pant;
+			if (act->ps != 0){
+				sig=act->ps;
+				sig->pant=ant;
+			}
+			ant->ps=act->ps;
 			free(act);			//Elimino el nodo actual
 			printf("Eliminacion realizada con exito");
 		}
@@ -271,7 +278,7 @@ int totalProductos(struct Lista *l){
 	if (l!=0){			
 		while (l!=0){
 			l=l->ps;
-			contador++;	//Incremento por cada elemento nuevo que encuentra
+			contador++;	//Incremento por cada elemeneto nuevo que encuentra
 		}
 	}
 	return contador;	//Retorno el total de productos de la lista (0 si no hay productos)
