@@ -67,13 +67,13 @@ int main()
 			break;			//Cada opcion del caso lleva un BREAK para salir del mismo
 		case 2:
 			printf("Es martes");
-			break;
+			
 		case 3:
 			printf("Es miercoles");
-			break;
+			
 		case 4:
 			printf("Es jueves");
-			break;
+			
 		case 5:
 			printf("Es viernes");
 			break;

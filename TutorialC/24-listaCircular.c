@@ -1,6 +1,6 @@
 /****************************************************************************
  *                                                                          *
- * Filename: 24-listaCircukar.c 			                                *
+ * Filename: 24-listaCircular.c 			                                *
  *                                                                          *
  * Purpose : Ejemplo de listas circulares en Standard C.		   			*
  *                                                                          *

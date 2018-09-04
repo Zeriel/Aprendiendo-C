@@ -51,8 +51,13 @@ int main(){
 	printf("Ingrese un string de 20 maximo: ");
 	scanf("%s", palabra);				//Para leer un string no hay problema. Notese que no lleva ampersand
 	printf("Ingreso %s\n", palabra);
-	strcpy(palabra, "nuevaPalabra");	//Para asignar un valor directamente usaremos la funcion correspondiente
-	printf("String cambiado a %s\n", palabra);
+	if ( strcmp(palabra, "cambiar") == 0 ){
+		strcpy(palabra, "nuevaPalabra");	//Para asignar un valor directamente usaremos la funcion correspondiente
+		printf("String cambiado a %s\n", palabra);
+	}
+	else{
+		printf("String no ha cambiado. Valor: %s\n", palabra);
+	}
 	_getch();
 	return 0;
 }

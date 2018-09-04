@@ -121,33 +121,25 @@ void inicializarLista (struct Lista **l){
 
 void insertarOrdenado(struct Lista **l, struct Producto p){
 	struct Lista *nuevo=malloc(sizeof(struct Lista));	//Defino el nuevo nodo
-	struct Lista *ant;	//Para la insercion aun es necesario
+	struct Lista *aux;	//Defino un auxiliar
 	struct Lista *act;	//Defino el nodo actual
 	nuevo->dato=p;		//Cargo producto en nuevo
-	nuevo->ps=0;		//Inicializo ps de nuevo en NIL
-	nuevo->pant=0;
-	if (*l==0){			//La lista esta vacia, no hace falta moverme
-		*l=nuevo;
+	act= *l;
+	while ( (act != 0) && (act->dato.codigo < nuevo->dato.codigo) ){
+		act= act->ps;
 	}
-	else{				//La lista no esta vacia, busco el punto de insercion
-		ant=0;			
-		act=*l;			//Puntero al nodo actual
-		while ((act!=0) && (act->dato.codigo < nuevo->dato.codigo)){
-			ant=act;
-			act=act->ps;
-		}
-		if (ant==0){	//Si anterior es NIL, inserto al principio
-			nuevo->ps= act;
-			*l=nuevo;
-		}
-		else{			//Debo insertar en el medio de dos nodos
-			nuevo->ps=act;
-			nuevo->pant=ant;
-			ant->ps=nuevo;
-			if (act != 0){
-				act->pant=nuevo;
-			}
-		}
+	if ( (*l == 0) || (act->pant == 0) ){	//Inserto al principio
+		nuevo->pant= 0;				//Anterior de nuevo es nil
+		nuevo->ps= *l;				//Siguiente de nuevo es L
+		*l= nuevo;					//L es nuevo
+	}
+	else{									//Inserto en el cuerpo
+		//Para entender: nuevo se encuentra en medio de actual y auxiliar
+		nuevo->ps= act;				//Nuevo apunta a actual, el nodo que le sigue
+		aux= act->pant;				//Defino auxiliar como el nodo anterior a actual, para no perderlo
+		act->pant= nuevo;			//Piso anterior a actual, redefiniendolo con nuevo
+		aux->ps= nuevo;				//El anterior a actual ahora apunta a nuevo
+		nuevo->pant= aux;			//El anterior de nuevo apunta al que era anterior a actual
 	}
 }
 
@@ -183,38 +175,37 @@ void modificarProducto(struct Lista **l){
 
 void eliminarProducto(struct Lista **l){
 	struct Lista *act;
-	struct Lista *ant;			//Lo usare solo al final
-	struct Lista *sig;			//Lo usare solo al final
+	struct Lista *aux;			//Lo usare solo al final
+	struct Lista *sig;
 	int cod;
 	if(*l!=0){					//La lista no esta vacia
-		//ant=0;
-		act=*l;
-		act->pant=0;
 		printf("Ingrese codigo del producto a eliminar: ");
 		scanf("%d", &cod);
 		_clrscr();
-		while((act!=0) && (act->dato.codigo!=cod)){
-			//ant=act;
+		act=*l;
+		while( (act!=0) && (act->dato.codigo!=cod) ){
 			act=act->ps;
 		}
-		if (act==0){			//El elemento no existe
-			printf("El producto de codigo %d no existe", cod);
-		}
-		else if(act->pant==0){		//Es el primer elemento
-			*l=act->ps;			//Muevo la cabeza de la lista
-			free(act);			//Elimino el nodo actual
-			printf("Eliminacion realizada con exito");
-		}
-		else{					//Es un elemento intermedio o final
-			//ant->ps=act->ps;	//Reacomodo el ps de anterior
-			ant=act->pant;
-			if (act->ps != 0){
-				sig=act->ps;
-				sig->pant=ant;
+		if (act!=0){			//El elemento existe
+			if(act->pant==0){		//Es el primer elemento
+				*l=(*l)->ps;			//Muevo la cabeza de la lista
+				if (*l != 0){		//Si la cabeza no es nil, hago anterior nil
+					(*l)->pant= 0;	//(anterior es el que estoy borrando, y es el primer elemento)
+				}
 			}
-			ant->ps=act->ps;
+			else{					//Es un elemento intermedio o final
+				aux= act->pant;		//Almaceno el anterior al que voy a borrar, para no perderlo
+				aux->ps= act->ps;	//Enlazo el anterior y el siguiente a actual, dejandolo fuera de la lista
+				if (act->ps != 0){	//Si actual no es el ultimo nodo, enlazo el siguiente con el anterior, dejandolo fuera de la lista
+					sig= act->ps;	//Sig lo igualo al nodo que le sigue a actual
+					sig->pant= aux;	//Enlazo el que le sigue a actual con el que tiene atras
+				}
+			}
 			free(act);			//Elimino el nodo actual
 			printf("Eliminacion realizada con exito");
+		}
+		else{
+			printf("El producto de codigo %d no existe", cod);
 		}
 	}
 	else{

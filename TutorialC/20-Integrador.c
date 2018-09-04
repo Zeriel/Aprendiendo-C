@@ -84,35 +84,35 @@ struct Factura{
 
 
 //INICIALIZAR.
-void inicializar(void);
+void inicializar(struct Habitacion **h, struct Factura **f);
 
 //CALCULO DE PISO
 int calcPiso(int numero);	//Lo usaremos para obtener el piso en base al numero de habitacion.
 
 //EVALUAR HABITACION EXISTENTE.
-int existeHab(int num);		//Devolvera 1 si la habitacion ya existe o 0 caso contrario.
+int existeHab(struct Habitacion **h, int num);		//Devolvera 1 si la habitacion ya existe o 0 caso contrario.
 
 //ALTA HABITACION.
-void altaHab(void);
+void altaHab(struct Habitacion **h);
 
 //BAJA HABITACION.
-void bajaHab(void);
+void bajaHab(struct Habitacion **h);
 
 //MODIFICAR HABITACION.
-void modiHab(void);
+void modiHab(struct Habitacion **h);
 
 //ASIGNAR HABITACION.
-void asignar(void);
+void asignar(struct Habitacion **h);
 
 //FACTURAR HABITACION.
-void facturar(void);
+void facturar(struct Habitacion **h, struct Factura **f);
 
 //---FUNCIONES DE LISTA FACTURA.
 
 
 
 //AGREGAR FACTURA.
-void agregarFactura(int num, float facturado);
+void agregarFactura(struct Factura **f, int num, float facturado);
 
 //MOSTRAR FACTURACION.
 void mostrarF(struct Factura *aux);
@@ -125,35 +125,34 @@ void importe(struct Factura *aux);
 
 
 //HAY OCUPADOS (para evaluar si hay ocupados en el piso).
-int hayOcupados(struct Habitacion *h);
+int hayOcupados(struct Habitacion *pisoHabitaciones);
 
 //HAY DISPONIBLES.
-int hayDisponibles(struct Habitacion *h);
+int hayDisponibles(struct Habitacion *pisoHabitaciones);
 
 //MOSTRAR GENERICO (Usada por los demas).
-void mostrar(struct Habitacion *h);
+void mostrar(struct Habitacion *unaHabitacion);
 
 //MOSTRAR TODAS HABITACIONES
-void mostrarT(struct Habitacion *h[5]);
+void mostrarT(struct Habitacion **h);
 
 //MOSTRAR SOLO OCUPADAS
-void mostrarO(struct Habitacion *h[5]);
+void mostrarO(struct Habitacion **h);
 
 //MOSTRAR SOLO DISPONIBLES.
-void mostrarD(struct Habitacion *h[5]);
+void mostrarD(struct Habitacion **h);
 
 
 //--FIN PROCEDIMIENTOS.----------------------------------------------------------------------
 
 
-//VARIABLES GLOBALES.
-struct Habitacion *hotel[5];
-struct Factura *F;
 
 //MAIN.
 int main(){
+	struct Habitacion *hotel[5];
+	struct Factura *F;
 	int resp=9, respAux;
-	inicializar();
+	inicializar(hotel, &F);
 	while (resp!=0){
 		printf("MENU PRINCIPAL - ADMINISTRACION DE HOTEL\n");
 		printf("----------------------------------------------\n");
@@ -189,13 +188,13 @@ int main(){
 					_clrscr();
 					switch(respAux){
 						case 1:
-							altaHab();
+							altaHab(hotel);
 							break;
 						case 2:
-							bajaHab();
+							bajaHab(hotel);
 							break;
 						case 3:
-							modiHab();
+							modiHab(hotel);
 							break;
 						case 0:
 							break;
@@ -209,11 +208,11 @@ int main(){
 				break;
 			//OPCION DOS
 			case 2:
-				asignar();
+				asignar(hotel);
 				break;
 			//OPCION TRES
 			case 3:
-				facturar();
+				facturar(hotel, &F);
 				break;
 			//OPCION CUATRO
 			case 4:
@@ -306,11 +305,11 @@ int main(){
 
 
 //INICIALIZAR (Tambien inicializa la lista de facturacion).
-void inicializar(void){		//Inicializo cada puntero del arreglo en NIL.
-	for (int i=0; i<5; i++){
-		hotel[i]=0;
+void inicializar(struct Habitacion **h, struct Factura **f){		//Inicializo cada puntero del arreglo en NIL.
+	for (int j=0; j<5; j++){	//Itera por cada lista del arreglo
+		h[j]= 0;		//La inicializa
 	}
-	F=0;
+	*f=0;
 }
 
 //CALCULO DE PISO.
@@ -336,11 +335,11 @@ int calcPiso(int numero){
 }
 
 //EXISTE HABITACION.
-int existeHab(int n){
+int existeHab(struct Habitacion **h, int n){
 	int i= calcPiso(n);
 
 	struct Habitacion *aux;
-	aux=hotel[i];
+	aux=h[i];
 	while (aux!=0 && aux->num!=n){
 		aux=aux->psig;
 	}
@@ -353,7 +352,7 @@ int existeHab(int n){
 }
 
 //ALTA HABITACION.
-void altaHab(void){
+void altaHab(struct Habitacion **h){
 	int num, cap, i=0;	//i es para el piso de la habitacion. Le doy valor para limpiar la warning.
 	float pre;
 	char tipo[15];
@@ -364,7 +363,7 @@ void altaHab(void){
 	_clrscr();
 	i= calcPiso(num);	//Calculo en que piso esta la habitacion.
 	if (i<5){ 			//Controlo si el numero es correcto.
-		if (!existeHab(num)){	//Controlo si la habitacion ya existe. 0 es el FALSE de C.
+		if (!existeHab(h, num)){	//Controlo si la habitacion ya existe. 0 es el FALSE de C.
 					printf("Ingrese capacidad de la habitacion (2 o 4): ");
 					scanf("%d", &cap);
 					_clrscr();
@@ -374,17 +373,17 @@ void altaHab(void){
 					printf("Ingrese precio de estadia por dia: $");
 					scanf("%f", &pre);
 					_clrscr();
-					if (hotel[i]==0){	//Ese piso no tiene habitaciones (primer nodo).
-						hotel[i]= (struct Habitacion *) malloc(sizeof(struct Habitacion));
-						hotel[i]->num=num;
-						hotel[i]->capacidad=cap;
-						strcpy(hotel[i]->tipo, tipo);
-						hotel[i]->precio=pre;
-						hotel[i]->estado='D';	//Disponible porque acabo de habilitarlo.
-						hotel[i]->psig=0;		//Puntero siguiente NIL.
+					if (h[i]==0){	//Ese piso no tiene habitaciones (primer nodo).
+						h[i]= (struct Habitacion *) malloc(sizeof(struct Habitacion));
+						h[i]->num=num;
+						h[i]->capacidad=cap;
+						strcpy(h[i]->tipo, tipo);
+						h[i]->precio=pre;
+						h[i]->estado='D';	//Disponible porque acabo de habilitarlo.
+						h[i]->psig=0;		//Puntero siguiente NIL.
 					}
 					else{		//Ya hay nodos cargados, debo moverme al ultimo.
-						aux=hotel[i];
+						aux=h[i];
 						while (aux->psig!=0){
 							aux=aux->psig;
 						}
@@ -413,7 +412,7 @@ void altaHab(void){
 }
 
 //BAJA HABITACION.
-void bajaHab(void){
+void bajaHab(struct Habitacion **h){
 	int num, i=0;
 
 	struct Habitacion *act;
@@ -426,7 +425,7 @@ void bajaHab(void){
 		printf("ERROR: Numero incosistente con los pisos del hotel.");
 	}
 	else{
-		act=hotel[i];
+		act=h[i];
 		ant=0;
 		while (act!=0 && act->num!=num){
 			ant=act;
@@ -440,7 +439,7 @@ void bajaHab(void){
 				ant->psig=act->psig;
 			}
 			else{			//Es el primer nodo.
-				hotel[i]=hotel[i]->psig;
+				h[i]=h[i]->psig;
 			}
 			free(act);
 			printf("Habitacion %d eliminada.", num);
@@ -451,7 +450,7 @@ void bajaHab(void){
 }
 
 //MODIFICAR HABITACION.
-void modiHab(void){
+void modiHab(struct Habitacion **h){
 	int num, i=0;
 	char tipo[15];
 
@@ -464,7 +463,7 @@ void modiHab(void){
 		printf("ERROR: Numero incosistente con los pisos del hotel.");
 	}
 	else{
-		aux=hotel[i];
+		aux=h[i];
 		while (aux!=0 && aux->num!=num){
 			aux=aux->psig;
 		}
@@ -497,7 +496,7 @@ void modiHab(void){
 }
 
 //ASIGNAR HABITACION.
-void asignar(void){
+void asignar(struct Habitacion **h){
 	int cap, i=0;
 	char tipo[15], encontro='n';
 
@@ -508,11 +507,11 @@ void asignar(void){
 	printf("Ingrese capacidad deseada (2-4): ");
 	scanf("%d", &cap);
 	_clrscr();
-	aux=hotel[i];
+	aux=h[i];
 	while ((encontro=='n') && (i<5)){
 		if (aux==0){		//Llegue al final del piso.
 			i++;			//Cambio de piso.
-			aux=hotel[i];	//Actualizo mi lista auxiliar.
+			aux=h[i];	//Actualizo mi lista auxiliar.
 		}
 		else{	//Sigo recorriendo el piso
 			if(aux->estado=='D' && aux->capacidad==cap && strcmp(aux->tipo,tipo)==0){
@@ -535,7 +534,7 @@ void asignar(void){
 }
 
 //FACTURAR HABITACION.
-void facturar(void){
+void facturar(struct Habitacion **h, struct Factura **f){
 	int num, i, dias;
 
 	struct Habitacion *aux;
@@ -548,7 +547,7 @@ void facturar(void){
 		_getch();
 	}
 	else{		//Puede ser que la habitacion exista.
-		aux=hotel[i];
+		aux=h[i];
 		while (aux!=0 && aux->num!=num){
 			aux=aux->psig;
 		}
@@ -571,7 +570,7 @@ void facturar(void){
 				aux->estado='D';	//La vuelvo a poner en disponible.
 				_getch();
 				_clrscr();
-				agregarFactura(aux->num, aux->precio*dias);
+				agregarFactura(f, aux->num, aux->precio*dias);
 			}
 		}
 	}
@@ -583,7 +582,7 @@ void facturar(void){
 
 
 //AGREGAR FACTURA A LISTA.
-void agregarFactura(int num, float facturado){
+void agregarFactura(struct Factura **f, int num, float facturado){
 	struct Factura *aux;
 	struct Cliente c;	//Creo un cliente para la factura
 	printf("Ingrese datos del cliente\n");
@@ -596,15 +595,17 @@ void agregarFactura(int num, float facturado){
 	printf("DNI: ");
 	scanf("%d", &c.dni);
 	_clrscr();
-	if (F==0){	//No hay facturas cargadas.
-		F=(struct Factura *) malloc(sizeof(struct Factura));
-		F->c=c;
-		F->numHabitacion=num;
-		F->facturado=facturado;
-		F->psig=0;
+	if (*f==0){	//No hay facturas cargadas.
+		printf("cargando factura");
+		*f=(struct Factura *) malloc(sizeof(struct Factura));
+		(*f)->c=c;	//IMPORTANTE: Uso parentesis porque el asterisco engloba a todo (*(f->c)) y no lo entiende
+		(*f)->numHabitacion=num;
+		(*f)->facturado=facturado;
+		(*f)->psig=0;
+		printf("cargo");
 	}
 	else{		//Ya hay al menos una factura cargada.
-		aux=F;
+		aux=*f;
 		while (aux->psig!=0){
 			aux=aux->psig;
 		}
@@ -652,13 +653,13 @@ void importe(struct Factura *aux){
 
 
 //COMPROBAR SI EL PISO TIENE OCUPADOS.
-int hayOcupados(struct Habitacion *h){
+int hayOcupados(struct Habitacion *pisoHabitaciones){
 	char encontro='n';	//Para saber si encontro, se inicializara en falso.
-	while (h!=0){
-		if (h->estado=='O'){
+	while (pisoHabitaciones!=0){
+		if (pisoHabitaciones->estado=='O'){
 			encontro='s';
 		}
-		h=h->psig;
+		pisoHabitaciones=pisoHabitaciones->psig;
 	}
 	if (encontro=='s'){
 		return 1;	//Retorna TRUE.
@@ -669,13 +670,13 @@ int hayOcupados(struct Habitacion *h){
 }
 
 //COMPROBAR SI EL PISO TIENE DISPONIBLES
-int hayDisponibles(struct Habitacion *h){
+int hayDisponibles(struct Habitacion *pisoHabitaciones){
 	char encontro='n';	//Para saber si encontro, se inicializara en falso.
-	while (h!=0){
-		if (h->estado=='D'){
+	while (pisoHabitaciones!=0){
+		if (pisoHabitaciones->estado=='D'){
 			encontro='s';
 		}
-		h=h->psig;
+		pisoHabitaciones=pisoHabitaciones->psig;
 	}
 	if (encontro=='s'){
 		return 1;	//Retorna TRUE.
@@ -686,12 +687,12 @@ int hayDisponibles(struct Habitacion *h){
 }
 
 //MOSTRAR GENERICO (Usado por los demas).
-void mostrar(struct Habitacion *h){
-	printf("Habitacion numero:   %d\n", h->num);
-	printf("Capacidad:           %d\n", h->capacidad);
-	printf("Tipo:                %s\n", h->tipo);
-	printf("Precio de estadia:   %.2f\n", h->precio);
-	if (h->estado=='O'){
+void mostrar(struct Habitacion *unaHabitacion){
+	printf("Habitacion numero:   %d\n", unaHabitacion->num);
+	printf("Capacidad:           %d\n", unaHabitacion->capacidad);
+	printf("Tipo:                %s\n", unaHabitacion->tipo);
+	printf("Precio de estadia:   %.2f\n", unaHabitacion->precio);
+	if (unaHabitacion->estado=='O'){
 		printf("Estado:              OCUPADO\n");
 	}
 	else{
@@ -702,7 +703,7 @@ void mostrar(struct Habitacion *h){
 }
 
 //MOSTRAR TODOS.
-void mostrarT(struct Habitacion *h[5]){
+void mostrarT(struct Habitacion **h){
 	struct Habitacion *aux; //Para recorrer cada "piso" (h[i]) sin perder la raiz.
 	for (int i=0; i<5; i++){
 		aux=h[i];			//Le asigno a aux la raiz en v[i] asi puedo recorrer la lista.
@@ -719,7 +720,7 @@ void mostrarT(struct Habitacion *h[5]){
 }
 
 //MOSTRAR OCUPADOS.
-void mostrarO(struct Habitacion *h[5]){
+void mostrarO(struct Habitacion **h){
 	struct Habitacion *aux; //Para recorrer cada "piso" (h[i]) sin perder la raiz.
 	for (int i=0; i<5; i++){
 		aux=h[i];				//Le asigno a aux la raiz en v[i] asi puedo recorrer la lista.
@@ -740,7 +741,7 @@ void mostrarO(struct Habitacion *h[5]){
 }
 
 //MOSTRAR DISPONIBLES.
-void mostrarD(struct Habitacion *h[5]){
+void mostrarD(struct Habitacion **h){
 	struct Habitacion *aux; //Para recorrer cada "piso" (h[i]) sin perder la raiz.
 	for (int i=0; i<5; i++){
 		aux=h[i];				//Le asigno a aux la raiz en v[i] asi puedo recorrer la lista.

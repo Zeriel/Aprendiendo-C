@@ -135,7 +135,7 @@ void eliminar(struct Alumno **lista){
 		printf("No hay alumnos cargados");
 	}
 	else{
-		ant=0;		//Anterior debe ser NIL.
+		ant=0;			//Anterior debe ser NIL.
 		act=*lista;		//Actual debe ser L.
 		printf("Ingrese legajo: ");
 		scanf("%s", legajo);

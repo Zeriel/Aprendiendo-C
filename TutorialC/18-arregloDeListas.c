@@ -38,11 +38,11 @@ struct Lista{
 
 //Procedimientos -----
 
-void cargarProducto(struct Producto *p);		//Carga un producto con datos
-void inicializarListas(struct Lista **l);		//Inicializa cada lista del arreglo de listas
-void insertarOrdenado(struct Lista **l, struct Producto p);	//Inserta ordenado en la lista
-void cargarListaArreglo(struct Lista **l, int pos);					//Carga los datos en la lista dada
-void mostrarLista(struct Lista **l, int pos);		//Muestra cada una de las listas del arreglo
+void cargarProducto(struct Producto *p);					//Carga un producto con datos
+void inicializarLista(struct Lista **l);					//Inicializa la i-esima lista enviada como parametro
+void insertarOrdenado(struct Lista **l, struct Producto p);	//Inserta ordenado en la lista enviada como parametro
+void cargarListaArreglo(struct Lista **l, int pos);			//Carga los datos en la lista dada. 'pos' es solo informativo
+void mostrarLista(struct Lista **l, int pos);				//Muestra la i-esima lista enviada como parametro. 'pos es informativo
 
 //--------------------
 
@@ -50,20 +50,20 @@ void mostrarLista(struct Lista **l, int pos);		//Muestra cada una de las listas 
 int main(){
 	int i;
 	//Aclaracion: la variable "i" es enviada como segundo parametro solo para indicar el numero de
-	//lista operando, no es bajo ningun concepto funcional necesario para la corredta ejecucion.
-	struct Lista *L[5];
+	//lista operando, no es bajo ningun concepto funcional necesario para la correcta ejecucion.
+	struct Lista *arregloListas[5];
 	for (i=0; i<5; i++){	//Inicializo cada lista en NIL
-		inicializarListas(&L[i]);
+		inicializarLista(&arregloListas[i]);	//Notese como envio la i-esima lista
 	}
 	for (i=0; i<5; i++){	//Muestro cada lista vacia
-		mostrarLista(&L[i], i);
+		mostrarLista(&arregloListas[i], i);
 	}
 	for (i=0; i<5; i++){	//Cargo datos en cada
-		cargarListaArreglo(&L[i], i);
+		cargarListaArreglo(&arregloListas[i], i);
 	}
 	_getch();
 	for (i=0; i<5; i++){	//Muestro cada lista cargada
-		mostrarLista(&L[i], i);
+		mostrarLista(&arregloListas[i], i);
 	}
 }
 
@@ -81,7 +81,7 @@ void cargarProducto(struct Producto *p){
 	_clrscr();
 }
 
-void inicializarListas(struct Lista **l){
+void inicializarLista(struct Lista **l){
 	*l=0;
 }
 
