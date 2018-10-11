@@ -13,19 +13,13 @@
 	<category name="26-archivo2.c" />
 	<category name="xx-pilaSinFree().c" />
 	<category name="18-arregloDeListas.c" />
-	<category name="23-listaDoblementeEncadenada.c">
-		<category name="Window">
-			<property name="Left" type="integer">-8</property>
-			<property name="Top" type="integer">-31</property>
-			<property name="Right" type="integer">1166</property>
-			<property name="Bottom" type="integer">515</property>
-			<property name="Maximized" type="integer">1</property>
-			<property name="Active" type="integer">1</property>
-		</category>
-	</category>
+	<category name="23-listaDoblementeEncadenada.c" />
 	<category name="17-lista3.c" />
 	<category name="15-lista.c" />
 	<category name="xx-colaSinFree().c" />
 	<category name="22-cola.c" />
 	<category name="19-arregloDeListas2.c" />
+	<category name="14-arregloDeArreglos2.c" />
+	<category name="13-arregloDeArreglos.c" />
+	<category name="12-puntero.c" />
 </settings>

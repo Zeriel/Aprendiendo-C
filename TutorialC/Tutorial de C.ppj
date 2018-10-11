@@ -22,11 +22,7 @@ SIGNFLAGS = -location:CU -store:MY -timeurl:http://timestamp.verisign.com/script
 INCLUDE = $(PellesCDir)\Include\Win;$(PellesCDir)\Include#
 LIB = $(PellesCDir)\Lib\Win64;$(PellesCDir)\Lib#
 
-# 
-# Build Tutorial de C.exe.
-# 
-"Tutorial de C.exe": \
-	output\20-Integrador.obj
+"Tutorial de C.exe":
 	$(LINK) $(LINKFLAGS) -out:"$@" $**
 
 # 
@@ -244,8 +240,6 @@ output\24-listaCircular.obj: \
 	output\06-menu.obj \
 	output\07-menu2.obj \
 	output\08-registro.obj \
-	output\09-funcion.obj \
-	output\10-funcion2.obj \
 	output\11-recursion.obj \
 	output\12-puntero.obj \
 	output\13-arregloDeArreglos.obj \
@@ -268,6 +262,9 @@ output\24-listaCircular.obj: \
 	output\21-pila.obj \
 	output\22-cola.obj \
 	output\23-listaDoblementeEncadenada.obj \
-	"output\xx-integrador (con arreglo de listas bien).obj"
+	"output\xx-integrador (con arreglo de listas bien).obj" \
+	output\20-Integrador.obj \
+	output\09-funcion.obj \
+	output\10-funcion2.obj
 
 .SILENT:

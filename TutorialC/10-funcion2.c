@@ -94,13 +94,14 @@ void listarRegistro(struct Alumno vec[3]){
 	}
 }
 
-struct Alumno vecAlu[5];
+struct Alumno vecAlu[3];
 
 int main(){
 	int vecNum[5], i;
 	inicializar(vecNum);				//Cargo el arreglo por referencia
 	inicializarCopia(vecNum);			//Cargo el arreglo por copia
 	for (i=0; i<5; i++){
+
 		printf("Valor del arreglo en i= %d: %d\n", i, vecNum[i]);
 	}
 	_getch();
