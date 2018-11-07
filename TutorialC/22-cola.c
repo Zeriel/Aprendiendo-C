@@ -129,28 +129,23 @@ void inicializarCola(struct Cola *c){
 void encolar(struct Cola *c, struct Proceso p){
 	struct lCola *nuevo=malloc(sizeof(struct lCola));	//Genera nuevo nodo
 	nuevo->dato= p;
-	nuevo->ps= c->pini;
-	c->pini= nuevo;		//Corrijo el puntero al primer nodo
-	if (c->pfin == 0){	//Es el primer elemento, por ende el final
-		c->pfin= nuevo;		//Corrijo el ultimo nodo
+	nuevo->ps= 0;
+	if (c->pini == 0){		//Es el primer elemento que se agrega a la cola
+		c->pini= nuevo;		//Agrego al puntero inicial tambien
 	}
+	else{
+		c->pfin->ps= nuevo;	//No es el primer elemento, el ultimo apunta a nuevo
+	}
+	c->pfin= nuevo;			//Y nuevo ahora es el ultimo
 }
 
 void desencolar(struct Cola *c, struct Proceso *p){
 	struct lCola *aux=malloc(sizeof(struct lCola));	//Defino aux
-	*p= c->pfin->dato;		//Retorno el dato del ultimo nodo
-	aux= c->pini;
-	if (c->pini == c->pfin){	//Es el unico elemento
-		c->pini= 0;
-		c->pfin= 0;
-	}
-	else{
-		while (aux->ps != c->pfin){	//Recorro hasta el anteultimo elemento
-			aux= aux->ps;
-		}
-		c->pfin= aux;	//Redefino el ultimo nodo con el anteultimo
-		aux= aux->ps;	//Posiciono aux en el nodo que debo eliminar
-		c->pfin->ps= 0;
+	*p= c->pini->dato;		//Retorno el dato del primer nodo
+	aux= c->pini;			//Guardo el nodo en aux para poder borrarlo
+	c->pini= c->pini->ps;	//Muevo el puntero inicial al siguiente nodo
+	if (c->pini == 0){		//Ya no quedan elementos en la cola			
+		c->pfin= 0;			//pfin deberia ser nil tambien
 	}
 	free(aux);		//Elimino el ultimo nodo
 }
